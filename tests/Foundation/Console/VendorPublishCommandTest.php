@@ -3,6 +3,7 @@
 namespace Illuminate\Tests\Foundation\Console;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use Mockery as m;
 use Orchestra\Testbench\TestCase;
@@ -12,8 +13,6 @@ class VendorPublishCommandTest extends TestCase
     protected function tearDown(): void
     {
         parent::tearDown();
-
-        m::close();
 
         ServiceProvider::$publishes = [];
         ServiceProvider::$publishGroups = [];
@@ -27,12 +26,6 @@ class VendorPublishCommandTest extends TestCase
 
     public function testReturnsFailureExitCodeWhenPathCannotBeLocated()
     {
-        $files = m::mock(Filesystem::class);
-        $files->shouldReceive('isFile')->andReturn(false);
-        $files->shouldReceive('isDirectory')->andReturn(false);
-
-        $this->app->instance('files', $files);
-
         ServiceProvider::$publishes[VendorPublishTestProvider::class] = [
             '/non/existent/path' => '/some/destination',
         ];
