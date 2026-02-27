@@ -43,6 +43,13 @@ class VendorPublishCommand extends Command
     protected $tags = [];
 
     /**
+     * Flag to indicate if an error has occured.
+     *
+     * @var bool
+     */
+    protected $hasError = false;
+
+    /**
      * The time the command started.
      *
      * @var \Illuminate\Support\Carbon|null
@@ -101,6 +108,8 @@ class VendorPublishCommand extends Command
         foreach ($this->tags ?: [null] as $tag) {
             $this->publishTag($tag);
         }
+
+        return $this->hasError ? 1 : 0;
     }
 
     /**
@@ -245,6 +254,8 @@ class VendorPublishCommand extends Command
         }
 
         $this->components->error("Can't locate path: <{$from}>");
+
+        $this->hasError = true;
     }
 
     /**
